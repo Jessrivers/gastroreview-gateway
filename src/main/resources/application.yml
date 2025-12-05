@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: ${SERVER_PORT:8080}
 
 spring:
   application:
@@ -12,25 +12,25 @@ spring:
           lower-case-service-id: true
       routes:
         - id: users-service
-          uri: lb://users-service
+          uri: lb://USERS-SERVICE
           predicates:
-            - Path=/api/auth/**, /api/users/**, /api/alerts/**, /api/notifications/**
+            - Path=/api/users/**
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/users/(?<segment>.*), /$\{segment}
 
         - id: restaurants-service
-          uri: lb://restaurants-service
+          uri: lb://RESTAURANTS-SERVICE
           predicates:
-            - Path=/api/restaurants/**, /api/dishes/**, /api/categories/**
+            - Path=/api/restaurants/**
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/restaurants/(?<segment>.*), /$\{segment}
 
         - id: reviews-service
-          uri: lb://reviews-service
+          uri: lb://REVIEWS-SERVICE
           predicates:
-            - Path=/graphql, /graphiql/**
+            - Path=/api/reviews/**
           filters:
-            - RewritePath=/graphql, /graphql
+            - RewritePath=/api/reviews/(?<segment>.*), /$\{segment}
 
       globalcors:
         cors-configurations:
