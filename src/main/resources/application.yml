@@ -11,26 +11,33 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
+        - id: auth-service
+          uri: lb://USERS-SERVICE
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
         - id: users-service
           uri: lb://USERS-SERVICE
           predicates:
             - Path=/api/users/**
           filters:
-            - RewritePath=/api/users/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: restaurants-service
           uri: lb://RESTAURANTS-SERVICE
           predicates:
             - Path=/api/restaurants/**
           filters:
-            - RewritePath=/api/restaurants/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: reviews-service
           uri: lb://REVIEWS-SERVICE
           predicates:
             - Path=/api/reviews/**
           filters:
-            - RewritePath=/api/reviews/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
       globalcors:
         cors-configurations:
@@ -56,3 +63,7 @@ eureka:
     hostname: ${RENDER_EXTERNAL_HOSTNAME:localhost}
     non-secure-port: ${SERVER_PORT:8080}
     instance-id: ${spring.application.name}:${RENDER_INSTANCE_ID:${random.value}}
+
+logging:
+  level:
+    '[org.springframework.cloud.gateway]': DEBUG
